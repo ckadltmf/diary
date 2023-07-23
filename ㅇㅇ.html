@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>My Diary</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      line-height: 1.6;
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+    h1 {
+      text-align: center;
+    }
+    .entry {
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      padding: 10px;
+      margin-bottom: 20px;
+    }
+    .date {
+      font-weight: bold;
+      color: #666;
+    }
+    .content {
+      margin-top: 10px;
+    }
+    textarea {
+      width: 100%;
+      height: 100px;
+    }
+    .button {
+      margin-top: 10px;
+    }
+  </style>
+</head>
+<body>
+  <h1>My Diary</h1>
+  <div id="entries"></div>
+
+  <h2>새 일기 작성하기</h2>
+  <form id="newEntryForm">
+    <label for="date">날짜:</label>
+    <input type="date" id="date" required>
+    <label for="content">내용:</label>
+    <textarea id="content" required></textarea>
+    <button type="submit" class="button">저장</button>
+  </form>
+
+  <script>
+    // Function to display diary entries from local storage
+    function displayEntries() {
+      const entriesDiv = document.getElementById('entries');
+      entriesDiv.innerHTML = '';
+
+      const entries = JSON.parse(localStorage.getItem('diaryEntries')) || [];
+
+      entries.forEach(entry => {
+        const entryDiv = document.createElement('div');
+        entryDiv.classList.add('entry');
+
+        const dateDiv = document.createElement('div');
+        dateDiv.classList.add('date');
+        dateDiv.textContent = entry.date;
+
+        const contentDiv = document.createElement('div');
+        contentDiv.classList.add('content');
+        contentDiv.textContent = entry.content;
+
+        const editButton = document.createElement('button');
+        editButton.classList.add('button');
+        editButton.textContent = '수정';
+        editButton.addEventListener('click', () => editEntry(entry.id));
+
+        entryDiv.appendChild(dateDiv);
+        entryDiv.appendChild(contentDiv);
+        entryDiv.appendChild(editButton);
+
+        entriesDiv.appendChild(entryDiv);
+      });
+    }
+
+    // Function to add a new entry
+    function addEntry(date, content) {
+      const entries = JSON.parse(localStorage.getItem('diaryEntries')) || [];
+      const newEntry = {
+        id: Date.now(),
+        date,
+        content,
+      };
+      entries.push(newEntry);
+      localStorage.setItem('diaryEntries', JSON.stringify(entries));
+      displayEntries();
+    }
+
+    // Function to edit an existing entry
+    function editEntry(id) {
+      const entries = JSON.parse(localStorage.getItem('diaryEntries')) || [];
+      const entryToEdit = entries.find(entry => entry.id === id);
+      if (!entryToEdit) return;
+
+      const newContent = prompt('일기를 수정해주세요:', entryToEdit.content);
+      if (newContent !== null) {
+        entryToEdit.content = newContent;
+        localStorage.setItem('diaryEntries', JSON.stringify(entries));
+        displayEntries();
+      }
+    }
+
+    // Event listener to add new entry
+    document.getElementById('newEntryForm').addEventListener('submit', function (event) {
+      event.preventDefault();
+      const date = document.getElementById('date').value;
+      const content = document.getElementById('content').value;
+      addEntry(date, content);
+      this.reset();
+    });
+
+    // Display existing entries on page load
+    displayEntries();
+  </script>
+</body>
+</html>
