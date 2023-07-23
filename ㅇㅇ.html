@@ -50,7 +50,7 @@
   </form>
 
   <script>
-    // Function to display diary entries from local storage
+    
     function displayEntries() {
       const entriesDiv = document.getElementById('entries');
       entriesDiv.innerHTML = '';
@@ -82,7 +82,7 @@
       });
     }
 
-    // Function to add a new entry
+    
     function addEntry(date, content) {
       const entries = JSON.parse(localStorage.getItem('diaryEntries')) || [];
       const newEntry = {
@@ -95,7 +95,7 @@
       displayEntries();
     }
 
-    // Function to edit an existing entry
+    
     function editEntry(id) {
       const entries = JSON.parse(localStorage.getItem('diaryEntries')) || [];
       const entryToEdit = entries.find(entry => entry.id === id);
